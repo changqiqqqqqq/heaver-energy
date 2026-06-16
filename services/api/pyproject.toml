@@ -1,0 +1,18 @@
+[project]
+name = "heaver-energy-api"
+version = "0.1.0"
+description = "Heaver Energy MVP FastAPI scaffold"
+requires-python = ">=3.11"
+dependencies = [
+  "alembic",
+  "fastapi",
+  "pydantic-settings",
+  "pymysql",
+  "redis",
+  "sqlalchemy",
+  "uvicorn[standard]"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
+

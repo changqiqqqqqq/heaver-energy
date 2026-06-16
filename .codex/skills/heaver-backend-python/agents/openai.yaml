@@ -1,0 +1,4 @@
+interface:
+  display_name: "河狸后端 Python 规范"
+  short_description: "河狸能源 FastAPI 后端 Python 开发与审查规范"
+  default_prompt: "使用 $heaver-backend-python 处理 services/api 的后端实现或代码审查。"

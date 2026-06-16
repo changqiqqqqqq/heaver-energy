@@ -1,0 +1,15 @@
+{
+  "name": "heaver-energy",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@8.15.9",
+  "workspaces": [
+    "apps/miniapp",
+    "apps/admin-web"
+  ],
+  "scripts": {
+    "dev:miniapp": "pnpm --filter @heaver-energy/miniapp dev:weapp",
+    "dev:admin": "pnpm --filter @heaver-energy/admin-web dev",
+    "dev:api": "cd services/api && uvicorn app.main:app --reload"
+  }
+}

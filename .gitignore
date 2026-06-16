@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.npm-cache/
+.pnpm-store/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build outputs
+dist/
+build/
+.taro/
+.vite/
+.swc/
+coverage/
+apps/miniapp/project.private.config.json
+
+# Runtime files
+.env
+.env.*
+!.env.example
+*.log
+.codex/logs/
+.codex/wx-preview/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
