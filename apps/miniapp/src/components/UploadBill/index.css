@@ -1,0 +1,64 @@
+.upload-bill {
+  margin-top: 18rpx;
+  min-height: 126rpx;
+  padding: 24rpx;
+  border-radius: 28rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  background: #fffaf4;
+  border: 2rpx dashed rgba(255, 139, 20, 0.38);
+}
+
+.upload-bill-hover {
+  opacity: 0.9;
+}
+
+.upload-bill-disabled {
+  opacity: 0.58;
+}
+
+.upload-bill-icon {
+  width: 66rpx;
+  height: 66rpx;
+  border-radius: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff0d8;
+}
+
+.upload-bill-icon-text {
+  font-size: 34rpx;
+  line-height: 38rpx;
+  font-weight: 900;
+  color: #ff7a00;
+}
+
+.upload-bill-copy {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-bill-title {
+  font-size: 28rpx;
+  line-height: 38rpx;
+  font-weight: 900;
+  color: #2a1204;
+}
+
+.upload-bill-subtitle {
+  margin-top: 4rpx;
+  font-size: 23rpx;
+  line-height: 32rpx;
+  color: rgba(94, 62, 34, 0.58);
+}
+
+.upload-bill-action {
+  font-size: 22rpx;
+  line-height: 32rpx;
+  color: #ff7a00;
+}

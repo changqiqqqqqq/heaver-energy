@@ -1,4 +1,4 @@
-"""测评题库与答题接口模型。"""
+"""测评题库、评分结果与答题接口模型。"""
 
 from typing import Any
 
@@ -17,15 +17,26 @@ class QuestionnaireOptionResponse(BaseModel):
 
 class QuestionnaireQuestionResponse(BaseModel):
     id: int
+    question_code: str | None = None
     title: str
     subtitle: str | None = None
     dimension_code: str | None = None
     question_type: str
+    score_mode: str = "score"
     sort_order: int
     is_required: bool
     options: list[QuestionnaireOptionResponse]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class QuestionnaireResultPageResponse(BaseModel):
+    headline: str | None = None
+    benchmark: str | None = None
+    benchmark_source: str | None = None
+    signals: list[str] = Field(default_factory=list)
+    cta: dict[str, Any] = Field(default_factory=dict)
+    disclaimer: str | None = None
 
 
 class QuestionnaireProfileResponse(BaseModel):
@@ -36,6 +47,7 @@ class QuestionnaireProfileResponse(BaseModel):
     tags: list[str] = Field(default_factory=list)
     summary: str | None = None
     recommendations: list[str] = Field(default_factory=list)
+    result_page: QuestionnaireResultPageResponse | None = None
 
 
 class QuestionnaireResponse(BaseModel):
@@ -63,10 +75,14 @@ class QuestionnaireSubmitRequest(BaseModel):
 class QuestionnaireSubmissionResponse(BaseModel):
     id: int
     questionnaire_id: int
+    lead_id: int | None
     profile_code: str | None
     profile_name: str | None
+    lead_grade: str | None
     total_score: int
     dimension_scores: dict[str, int]
+    dimension_stars: dict[str, int]
+    answer_tags: dict[str, Any]
     result: QuestionnaireProfileResponse | None
     answers_snapshot: list[dict[str, Any]]
 
@@ -76,15 +92,18 @@ class AdminQuestionnaireOptionInput(BaseModel):
     title: str = Field(min_length=1, max_length=256)
     subtitle: str | None = Field(default=None, max_length=256)
     score_json: dict[str, int] | None = None
+    tags_json: dict[str, Any] | None = None
     profile_bias: str | None = Field(default=None, max_length=64)
     sort_order: int = 0
 
 
 class AdminQuestionnaireQuestionInput(BaseModel):
+    question_code: str | None = Field(default=None, max_length=32)
     title: str = Field(min_length=1, max_length=256)
     subtitle: str | None = Field(default=None, max_length=256)
     dimension_code: str | None = Field(default=None, max_length=64)
     question_type: str = Field(default="single_choice", pattern="^(single_choice|multiple_choice)$")
+    score_mode: str = Field(default="score", pattern="^(score|tag_only)$")
     sort_order: int = 0
     is_required: bool = True
     options: list[AdminQuestionnaireOptionInput] = Field(min_length=1)
@@ -93,12 +112,14 @@ class AdminQuestionnaireQuestionInput(BaseModel):
 class AdminQuestionnaireProfileInput(BaseModel):
     profile_code: str = Field(min_length=1, max_length=64)
     profile_name: str = Field(min_length=1, max_length=64)
+    priority: int = 100
     lead_grade_suggestion: str | None = Field(default=None, max_length=16)
     theme_color: str | None = Field(default=None, max_length=32)
     tags: list[str] = Field(default_factory=list)
     summary: str | None = Field(default=None, max_length=512)
     recommendations: list[str] = Field(default_factory=list)
     rule_json: dict[str, Any] | None = None
+    result_page_json: dict[str, Any] | None = None
 
 
 class AdminQuestionnaireCreateRequest(BaseModel):
@@ -107,6 +128,7 @@ class AdminQuestionnaireCreateRequest(BaseModel):
     version: str = Field(default="v1", max_length=32)
     description: str | None = Field(default=None, max_length=512)
     status: str = Field(default="draft", pattern="^(draft|published|archived)$")
+    result_config_json: dict[str, Any] | None = None
     questions: list[AdminQuestionnaireQuestionInput] = Field(min_length=1)
     profiles: list[AdminQuestionnaireProfileInput] = Field(default_factory=list)
 

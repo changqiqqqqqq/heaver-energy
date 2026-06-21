@@ -5,6 +5,9 @@
     "moduleResolution": "Node",
     "jsx": "react-jsx",
     "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

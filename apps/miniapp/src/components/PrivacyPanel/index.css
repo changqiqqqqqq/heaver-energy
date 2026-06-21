@@ -1,0 +1,23 @@
+.privacy-panel {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.72);
+  border: 2rpx solid rgba(255, 226, 190, 0.78);
+}
+
+.privacy-title {
+  display: block;
+  font-size: 26rpx;
+  line-height: 36rpx;
+  font-weight: 900;
+  color: #6a3508;
+}
+
+.privacy-copy {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  line-height: 34rpx;
+  color: rgba(98, 62, 31, 0.64);
+}

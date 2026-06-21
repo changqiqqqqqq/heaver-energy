@@ -1,4 +1,5 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
+import path from 'path'
 
 export default defineConfig(async () => {
   const config: UserConfigExport = {
@@ -9,6 +10,9 @@ export default defineConfig(async () => {
     outputRoot: 'dist',
     framework: 'react',
     compiler: 'webpack5',
+    alias: {
+      '@': path.resolve(__dirname, '..', 'src'),
+    },
     mini: {},
     h5: {}
   }

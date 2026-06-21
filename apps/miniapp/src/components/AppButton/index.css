@@ -1,0 +1,53 @@
+.app-button {
+  min-height: 96rpx;
+  padding: 0 36rpx;
+  border-radius: 56rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.16s ease, opacity 0.16s ease;
+}
+
+.app-button-primary {
+  background: linear-gradient(135deg, #ff9d24 0%, #ff7a00 100%);
+  box-shadow: 0 18rpx 36rpx rgba(255, 122, 0, 0.22);
+}
+
+.app-button-light {
+  background: #fff7ed;
+}
+
+.app-button-outline {
+  border: 2rpx solid rgba(255, 122, 0, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.app-button-text {
+  font-size: 30rpx;
+  line-height: 40rpx;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.app-button-light .app-button-text,
+.app-button-outline .app-button-text {
+  color: #b84300;
+}
+
+.app-button-arrow {
+  margin-left: 18rpx;
+  font-size: 38rpx;
+  line-height: 40rpx;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.app-button-disabled {
+  opacity: 0.48;
+}
+
+.app-button-hover {
+  transform: scale(0.985);
+  opacity: 0.9;
+}

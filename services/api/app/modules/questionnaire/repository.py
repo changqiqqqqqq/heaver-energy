@@ -1,5 +1,7 @@
 """测评模块数据访问。"""
 
+from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
@@ -67,6 +69,7 @@ def create_questionnaire(db: Session, request: AdminQuestionnaireCreateRequest) 
         version=request.version,
         description=request.description,
         status=request.status,
+        result_config_json=request.result_config_json,
         published_at=utc_now() if request.status == "published" else None,
     )
     db.add(questionnaire)
@@ -75,10 +78,12 @@ def create_questionnaire(db: Session, request: AdminQuestionnaireCreateRequest) 
     for question_input in request.questions:
         question = QuestionnaireQuestion(
             questionnaire_id=questionnaire.id,
+            question_code=question_input.question_code,
             title=question_input.title,
             subtitle=question_input.subtitle,
             dimension_code=question_input.dimension_code,
             question_type=question_input.question_type,
+            score_mode=question_input.score_mode,
             sort_order=question_input.sort_order,
             is_required=question_input.is_required,
             status="active",
@@ -94,6 +99,7 @@ def create_questionnaire(db: Session, request: AdminQuestionnaireCreateRequest) 
                     title=option_input.title,
                     subtitle=option_input.subtitle,
                     score_json=option_input.score_json,
+                    tags_json=option_input.tags_json,
                     profile_bias=option_input.profile_bias,
                     sort_order=option_input.sort_order,
                 )
@@ -105,12 +111,14 @@ def create_questionnaire(db: Session, request: AdminQuestionnaireCreateRequest) 
                 questionnaire_id=questionnaire.id,
                 profile_code=profile_input.profile_code,
                 profile_name=profile_input.profile_name,
+                priority=profile_input.priority,
                 lead_grade_suggestion=profile_input.lead_grade_suggestion,
                 theme_color=profile_input.theme_color,
                 tags_json=profile_input.tags,
                 summary=profile_input.summary,
                 recommendations_json=profile_input.recommendations,
                 rule_json=profile_input.rule_json,
+                result_page_json=profile_input.result_page_json,
             )
         )
 
@@ -135,11 +143,14 @@ def create_submission(
     questionnaire_id: int,
     result_profile_id: int | None,
     profile_code: str | None,
+    lead_grade: str | None,
     total_score: int,
     dimension_scores: dict[str, int],
-    answers_snapshot: list[dict],
-    result_snapshot: dict | None,
-    answer_rows: list[dict],
+    dimension_stars: dict[str, int],
+    answer_tags: dict[str, Any],
+    answers_snapshot: list[dict[str, Any]],
+    result_snapshot: dict[str, Any] | None,
+    answer_rows: list[dict[str, Any]],
 ) -> QuestionnaireSubmission:
     submission = QuestionnaireSubmission(
         user_id=user_id,
@@ -148,8 +159,11 @@ def create_submission(
         questionnaire_id=questionnaire_id,
         result_profile_id=result_profile_id,
         profile_code=profile_code,
+        lead_grade=lead_grade,
         total_score=total_score,
         dimension_scores_json=dimension_scores,
+        dimension_stars_json=dimension_stars,
+        answer_tags_json=answer_tags,
         answers_snapshot_json=answers_snapshot,
         result_snapshot_json=result_snapshot,
     )
@@ -162,7 +176,10 @@ def create_submission(
                 submission_id=submission.id,
                 question_id=row["question_id"],
                 option_id=row["option_id"],
+                question_snapshot_json=row.get("question_snapshot"),
+                option_snapshot_json=row.get("option_snapshot"),
                 score_json=row.get("score_json"),
+                tags_json=row.get("tags_json"),
             )
         )
     db.flush()
@@ -171,3 +188,12 @@ def create_submission(
 
 def get_submission_by_id(db: Session, submission_id: int) -> QuestionnaireSubmission | None:
     return db.get(QuestionnaireSubmission, submission_id)
+
+
+def list_submissions_by_lead(db: Session, lead_id: int) -> list[QuestionnaireSubmission]:
+    statement = (
+        select(QuestionnaireSubmission)
+        .where(QuestionnaireSubmission.lead_id == lead_id)
+        .order_by(QuestionnaireSubmission.created_at.desc())
+    )
+    return list(db.scalars(statement).all())

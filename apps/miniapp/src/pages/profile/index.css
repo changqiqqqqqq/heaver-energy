@@ -1,0 +1,118 @@
+.profile-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 76rpx 30rpx 48rpx;
+  background: linear-gradient(180deg, #fff8ed 0%, #fff0dc 100%);
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  min-height: 186rpx;
+  box-sizing: border-box;
+  padding: 30rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(145deg, #ff9f21 0%, #ff7a00 100%);
+  box-shadow: 0 22rpx 48rpx rgba(210, 87, 0, 0.14);
+}
+
+.profile-avatar {
+  width: 104rpx;
+  height: 104rpx;
+  flex: 0 0 104rpx;
+  border-radius: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.profile-avatar-text {
+  font-size: 52rpx;
+  color: #ffffff;
+}
+
+.profile-main {
+  min-width: 0;
+  margin-left: 24rpx;
+}
+
+.profile-name {
+  display: block;
+  font-size: 34rpx;
+  line-height: 46rpx;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.profile-meta {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 34rpx;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.profile-actions {
+  margin-top: 22rpx;
+}
+
+.profile-menu {
+  margin-top: 24rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 34rpx;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18rpx 46rpx rgba(177, 98, 25, 0.08);
+}
+
+.profile-menu-item {
+  min-height: 126rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid rgba(231, 200, 165, 0.55);
+}
+
+.profile-menu-item:last-child {
+  border-bottom: 0;
+}
+
+.menu-title {
+  display: block;
+  font-size: 29rpx;
+  line-height: 40rpx;
+  font-weight: 900;
+  color: #251107;
+}
+
+.menu-desc {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  line-height: 34rpx;
+  color: rgba(78, 53, 32, 0.56);
+}
+
+.menu-arrow {
+  margin-left: 18rpx;
+  font-size: 48rpx;
+  line-height: 50rpx;
+  color: rgba(119, 84, 50, 0.4);
+}
+
+.profile-logout {
+  height: 92rpx;
+  margin-top: 24rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.profile-logout-text {
+  font-size: 28rpx;
+  line-height: 38rpx;
+  font-weight: 800;
+  color: rgba(117, 75, 38, 0.72);
+}
