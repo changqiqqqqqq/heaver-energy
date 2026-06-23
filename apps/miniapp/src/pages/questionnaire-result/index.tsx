@@ -1,32 +1,14 @@
 import { Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import AppButton from '@/components/AppButton'
-import EnergyCard from '@/components/EnergyCard'
 import { authApi } from '@/services/auth.api'
 import { questionnaireApi, type QuestionnaireSubmissionResponse } from '@/services/questionnaire.api'
 import { getLatestSubmission, saveLatestSubmission } from '@/store/questionnaire.store'
 
+import { getResultContent, type ResultAction, type ResultSignal } from './result-content'
 import './index.css'
-
-const dimensionNames: Record<string, string> = {
-  CP: '成本压力',
-  MA: '管理清晰度',
-  SR: '供应商判断',
-  EP: '用能优化',
-  AM: '行动成熟度',
-  LV: '线索价值',
-}
-
-const profileThemes: Record<string, 'orange' | 'blue' | 'green'> = {
-  hidden_waste: 'orange',
-  cost_sensitive: 'orange',
-  supplier_confused: 'orange',
-  growth_expansion: 'blue',
-  energy_awakened: 'blue',
-  stable_operation: 'green',
-}
 
 const getQueryId = () => {
   const params = Taro.getCurrentInstance().router?.params || {}
@@ -34,18 +16,24 @@ const getQueryId = () => {
   return value ? Number(value) : undefined
 }
 
-const getTheme = (profileCode?: string | null) => {
-  return profileThemes[profileCode || ''] || 'orange'
+const buildActionUrl = (action: ResultAction, submission: QuestionnaireSubmissionResponse) => {
+  const query = `leadId=${submission.lead_id || ''}&submissionId=${submission.id || ''}&profileCode=${submission.profile_code || ''}`
+  return action.type === 'report' ? `/pages/screening/index?${query}` : `/pages/service-request/index?${query}`
+}
+
+function SignalCopy({ signal }: { signal: ResultSignal }) {
+  return (
+    <Text className="result-signal-copy">
+      {signal.prefix}
+      <Text className="result-highlight">{signal.highlight}</Text>
+      {signal.suffix}
+    </Text>
+  )
 }
 
 export default function QuestionnaireResultPage() {
   const [submission, setSubmission] = useState<QuestionnaireSubmissionResponse | undefined>(() => getLatestSubmission())
   const [loading, setLoading] = useState(false)
-
-  const theme = getTheme(submission?.profile_code)
-  const result = submission?.result
-  const resultPage = result?.result_page
-  const dimensionList = useMemo(() => Object.entries(submission?.dimension_stars || {}), [submission])
 
   useEffect(() => {
     const submissionId = getQueryId()
@@ -60,6 +48,8 @@ export default function QuestionnaireResultPage() {
         const data = await questionnaireApi.getSubmission(submissionId)
         setSubmission(data)
         saveLatestSubmission(data)
+      } catch {
+        Taro.showToast({ title: '结果读取失败，请稍后重试', icon: 'none' })
       } finally {
         setLoading(false)
       }
@@ -68,21 +58,9 @@ export default function QuestionnaireResultPage() {
     load()
   }, [submission?.id])
 
-  const goReport = () => {
-    Taro.navigateTo({
-      url: `/pages/screening/index?leadId=${submission?.lead_id || ''}&submissionId=${submission?.id || ''}&profileCode=${submission?.profile_code || ''}`,
-    })
-  }
-
-  const goConsult = () => {
-    Taro.navigateTo({
-      url: `/pages/service-request/index?leadId=${submission?.lead_id || ''}&submissionId=${submission?.id || ''}&profileCode=${submission?.profile_code || ''}`,
-    })
-  }
-
   if (loading || !submission) {
     return (
-      <View className="result-page result-center">
+      <View className="result-page result-center result-theme-flame">
         <Text className="result-loading">{loading ? '正在读取结果...' : '暂无测评结果'}</Text>
         {!loading ? (
           <View className="result-empty-action">
@@ -93,79 +71,92 @@ export default function QuestionnaireResultPage() {
     )
   }
 
+  const content = getResultContent(submission.profile_code)
+
   return (
-    <View className={`result-page result-theme-${theme}`}>
-      <View className="result-hero">
-        <View className="result-brand">
-          <View className="result-brand-mark">
-            <Text className="result-brand-face">⌁</Text>
-          </View>
-          <Text className="result-brand-name">河狸数字能源</Text>
-        </View>
+    <View className={`result-page result-theme-${content.theme}`}>
+      <View className="result-bg-art">
+        <View className="result-bg-line result-bg-line-a" />
+        <View className="result-bg-line result-bg-line-b" />
+        <View className="result-bg-bar result-bg-bar-a" />
+        <View className="result-bg-bar result-bg-bar-b" />
+        <View className="result-bg-bar result-bg-bar-c" />
+      </View>
 
-        <View className="result-medal">
-          <Text className="result-medal-icon">♙</Text>
-        </View>
-        <Text className="result-label">经营体质画像 2026</Text>
-        <Text className="result-profile">{submission.profile_name || result?.profile_name || '经营体质画像'}</Text>
-        <Text className="result-summary">{result?.summary || resultPage?.headline || '你已经完成经营体质测试，下一步可以领取更详细的优化建议。'}</Text>
+      <View className="result-status" />
 
-        <View className="result-tags">
-          <Text className="result-tag">线索等级 {submission.lead_grade || '-'}</Text>
-          <Text className="result-tag">已生成报告</Text>
+      <View className="result-header">
+        <View className="result-icon-box">
+          <Text className="result-icon-text">{content.icon}</Text>
         </View>
-
-        <View className="result-actions">
-          <View className="result-action" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
-            <Text className="result-action-text">保存</Text>
-          </View>
-          <View className="result-action result-action-light" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
-            <Text className="result-action-text">分享</Text>
-          </View>
+        <View className="result-title-row">
+          <View className="result-title-mark" />
+          <Text className="result-title">{content.title}</Text>
+          <View className="result-title-mark result-title-mark-right" />
+        </View>
+        <View className="result-subtitle-row">
+          <View className="result-subtitle-line" />
+          <Text className="result-subtitle">{content.subtitle}</Text>
+          <View className="result-subtitle-line result-subtitle-line-right" />
         </View>
       </View>
 
-      <View className="result-section">
-        <Text className="result-section-title">接下来，你想做什么？</Text>
-        <View className="result-card-list">
-          <EnergyCard title="领取专属商电优化报告" subtitle="补充企业信息，获取免费初筛建议" icon="▤" onClick={goReport} />
-          <EnergyCard title="我想让顾问帮我看看" subtitle="一对一判断报价、用能或供应商问题" icon="⌘" tone="blue" onClick={goConsult} />
-        </View>
-      </View>
+      <View className="result-main-card">
+        <Text className="result-stat-num">{content.stat}</Text>
+        <Text className="result-stat-label">{content.statLabel}</Text>
 
-      <View className="result-section">
-        <Text className="result-section-title">你的经营信号</Text>
-        <View className="dimension-grid">
-          {dimensionList.map(([code, stars]) => (
-            <View className="dimension-item" key={code}>
-              <Text className="dimension-name">{dimensionNames[code] || code}</Text>
-              <View className="dimension-stars">
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <Text key={value} className={value <= stars ? 'dimension-star dimension-star-on' : 'dimension-star'}>
-                    ★
-                  </Text>
-                ))}
+        <View className="result-signal-list">
+          {content.signals.map((signal, index) => (
+            <View className="result-signal-item" key={signal.highlight}>
+              <View className="result-num-badge">
+                <Text className="result-num-text">{index + 1}</Text>
               </View>
+              <SignalCopy signal={signal} />
+              <View className="result-mini-icon">
+                <Text className="result-mini-icon-text">{signal.icon}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        <View className="result-warn-box">
+          <View className="result-warn-icon">
+            <Text className="result-warn-icon-text">!</Text>
+          </View>
+          <Text className="result-warn-text">{content.warning}</Text>
+        </View>
+      </View>
+
+      <View className="result-actions">
+        <View className="result-action result-action-secondary" hoverClass="result-tap" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
+          <Text className="result-action-icon">↓</Text>
+          <Text className="result-action-text">保存</Text>
+        </View>
+        <View className="result-action result-action-primary" hoverClass="result-tap" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
+          <Text className="result-action-icon">↗</Text>
+          <Text className="result-action-text">分享</Text>
+        </View>
+      </View>
+
+      <View className="result-next-section">
+        <Text className="result-next-label">接下来，你想做什么？</Text>
+        <View className="result-next-list">
+          {content.nextActions.map((action) => (
+            <View className="result-next-row" hoverClass="result-tap" key={action.title} onClick={() => Taro.navigateTo({ url: buildActionUrl(action, submission) })}>
+              <View className="result-next-icon">
+                <Text className="result-next-icon-text">{action.icon}</Text>
+              </View>
+              <View className="result-next-copy">
+                <Text className="result-next-title">{action.title}</Text>
+                <Text className="result-next-subtitle">{action.subtitle}</Text>
+              </View>
+              <Text className="result-next-arrow">›</Text>
             </View>
           ))}
         </View>
       </View>
 
-      {resultPage?.benchmark || resultPage?.signals?.length ? (
-        <View className="result-section">
-          <Text className="result-section-title">我们看见的机会</Text>
-          {resultPage.benchmark ? <Text className="result-benchmark">{resultPage.benchmark}</Text> : null}
-          {(resultPage.signals || []).map((signal) => (
-            <Text className="result-signal" key={signal}>
-              • {signal}
-            </Text>
-          ))}
-        </View>
-      ) : null}
-
-      <Text className="result-disclaimer">
-        {resultPage?.disclaimer || '以上结果基于问卷答案生成，实际优化空间仍需结合电费账单、合同和企业用能情况进一步判断。'}
-      </Text>
+      <Text className="result-footer-note">{content.footerNote}</Text>
     </View>
   )
 }
