@@ -1,7 +1,9 @@
 .home-page {
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 56rpx 42rpx 64rpx;
+  padding: 56rpx 42rpx 60rpx;
+  display: flex;
+  flex-direction: column;
   background:
     linear-gradient(155deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 246, 233, 0.95) 38%, rgba(255, 214, 147, 0.88) 100%),
     #fff4df;
@@ -16,7 +18,7 @@
   display: flex;
   align-items: center;
   height: 122rpx;
-  margin-top: 18rpx;
+  margin-top: 72rpx;
 }
 
 .brand-mark {
@@ -61,7 +63,7 @@
 .hero-copy {
   display: flex;
   flex-direction: column;
-  margin-top: 52rpx;
+  margin-top: 78rpx;
 }
 
 .hero-line {
@@ -76,11 +78,20 @@
   color: #d94c00;
 }
 
+.hero-subtitle {
+  display: block;
+  margin-top: 50rpx;
+  font-size: 30rpx;
+  line-height: 36rpx;
+  font-weight: 900;
+  color: rgba(82, 44, 20, 0.42);
+}
+
 .primary-card {
   position: relative;
   box-sizing: border-box;
-  min-height: 456rpx;
-  margin-top: 44rpx;
+  min-height: 600rpx;
+  margin-top: auto;
   padding: 50rpx 44rpx 46rpx;
   border-radius: 64rpx;
   background: linear-gradient(155deg, #ffb23b 0%, #ff8e11 54%, #ff8200 100%);
@@ -146,14 +157,14 @@
 
 .primary-title {
   font-size: 40rpx;
-  line-height: 54rpx;
+  line-height: 65rpx;
   font-weight: 900;
   color: #fffaf2;
 }
 
 .primary-subtitle {
-  margin-top: 8rpx;
-  font-size: 24rpx;
+  margin-top: 15rpx;
+  font-size: 27rpx;
   line-height: 34rpx;
   color: rgba(255, 255, 255, 0.78);
 }
@@ -176,8 +187,8 @@
 }
 
 .primary-button {
-  height: 104rpx;
-  margin-top: 28rpx;
+  height: 150rpx;
+  margin-top: 65rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -186,7 +197,7 @@
 }
 
 .primary-button-text {
-  font-size: 32rpx;
+  font-size: 45rpx;
   line-height: 42rpx;
   font-weight: 900;
   color: #8f2500;
@@ -194,7 +205,7 @@
 
 .primary-button-arrow {
   margin-left: 26rpx;
-  font-size: 46rpx;
+  font-size: 52rpx;
   line-height: 48rpx;
   font-weight: 900;
   color: #b33a00;

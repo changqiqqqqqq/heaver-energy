@@ -36,6 +36,7 @@ export default function HomePage() {
         <Text className="hero-line">老板</Text>
         <Text className="hero-line">你多交了</Text>
         <Text className="hero-line hero-line-accent">多少电费？</Text>
+        <Text className="hero-subtitle">测一测，发现降本空间</Text>
       </View>
 
       <View className="primary-card" hoverClass="tap-soft" onClick={() => navigateTo('/pages/questionnaire/index')}>
@@ -47,33 +48,18 @@ export default function HomePage() {
 
         <View className="primary-card-copy">
           <Text className="primary-title">电费瘦身小测试</Text>
-          <Text className="primary-subtitle">无需账单 · 1分钟看清经营体质</Text>
+          <Text className="primary-subtitle">无需数据 · 问题简单</Text>
         </View>
 
-        <Text className="primary-desc">回答 10 个小问题，先判断你属于哪类用电经营状态。</Text>
-        <Text className="primary-link">测完可领取免费商电优化报告</Text>
+        <Text className="primary-desc">1分钟，找出你多花的每一分钱。</Text>
+        <Text className="primary-link">连接供应商BOSS，直接聊</Text>
 
         <View className="primary-button">
-          <Text className="primary-button-text">我现在开始</Text>
+          <Text className="primary-button-text">戳我开始</Text>
           <Text className="primary-button-arrow">→</Text>
         </View>
       </View>
 
-      <View className="quick-grid">
-        <EnergyCard
-          title="免费商电优化报告"
-          subtitle="补充企业信息后提交初筛"
-          icon="▤"
-          onClick={() => navigateTo('/pages/screening/index')}
-        />
-        <EnergyCard
-          title="顾问帮我看看"
-          subtitle="提交用能、报价或供应商问题"
-          icon="⌘"
-          tone="blue"
-          onClick={() => navigateTo('/pages/service-request/index')}
-        />
-      </View>
     </View>
   )
 }
