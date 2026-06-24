@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>河狸数字能源｜六个结果页·跳色完整按钮版</title>
+<style>
+:root{
+  --brand:#ff5a13;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#e8e0d5;font-family:var(--font);padding:30px 14px 64px;color:#2b160d}
+.nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 auto 26px;max-width:920px}
+.nav button{appearance:none;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.45);color:#5e544c;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;box-shadow:0 4px 12px rgba(0,0,0,.04);font-family:inherit}
+.nav button.active{background:#2b2521;color:#fff;border-color:#2b2521;box-shadow:0 8px 18px rgba(0,0,0,.16)}
+.stage{display:flex;justify-content:center}.page{display:none}.page.active{display:flex;justify-content:center}
+.phone{width:430px;min-height:928px;border-radius:44px;position:relative;overflow:hidden;box-shadow:0 32px 76px rgba(0,0,0,.22),0 9px 22px rgba(0,0,0,.10);background:var(--phone-bg);padding:36px 28px 26px;color:var(--text)}
+.phone::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 10% 7%,rgba(255,255,255,.44) 0 8%,transparent 8.5%),radial-gradient(circle at 93% 55%,rgba(255,255,255,.20) 0 4.5%,transparent 5%),linear-gradient(180deg,rgba(255,255,255,.22),transparent 46%,rgba(255,255,255,.16));pointer-events:none;z-index:0}.phone>*{position:relative;z-index:1}
+.header{text-align:center;color:#fff;padding-top:4px;margin-bottom:24px}.icon-box{width:76px;height:76px;margin:0 auto 22px;border-radius:25px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.42);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 14px 26px rgba(0,0,0,.08)}
+.icon-box svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.icon-box .fill, .icon-box svg .fill{fill:#fff;stroke:none}
+.result-title{font-size:43px;font-weight:900;line-height:1.08;letter-spacing:.04em;text-shadow:0 3px 0 rgba(0,0,0,.08),0 14px 30px rgba(0,0,0,.12);margin-bottom:12px}.title-wrap{display:flex;align-items:center;justify-content:center;gap:13px}.title-mark{height:15px;width:36px;opacity:.55;background:linear-gradient(90deg,transparent,rgba(255,255,255,.88));border-radius:999px}.title-mark.r{transform:rotate(180deg)}.subtitle{font-size:21px;font-weight:700;line-height:1.4;color:rgba(255,255,255,.94);display:flex;align-items:center;justify-content:center;gap:12px;text-shadow:0 6px 18px rgba(0,0,0,.10)}.subtitle::before,.subtitle::after{content:"";width:54px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.72));}.subtitle::after{transform:rotate(180deg)}.dot{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.85);display:none}
+.bg-art{position:absolute;right:-14px;top:98px;width:160px;height:160px;opacity:.18;color:#fff;z-index:0}.bg-art svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.result-card{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,248,242,.90));border:1px solid rgba(255,255,255,.64);border-radius:34px;padding:31px 20px 22px;box-shadow:0 24px 56px rgba(43,18,5,.16),inset 0 1px 0 rgba(255,255,255,.92);backdrop-filter:blur(14px);overflow:hidden}.stat-num{font-size:74px;font-weight:950;line-height:.95;text-align:center;letter-spacing:-.055em;color:var(--theme);text-shadow:0 3px 0 rgba(255,255,255,.65),0 9px 18px color-mix(in srgb,var(--theme) 28%,transparent)}.stat-label{text-align:center;color:var(--deep);font-size:20px;font-weight:800;line-height:1.35;margin-top:16px;margin-bottom:23px}.signal-list{display:flex;flex-direction:column;gap:14px}.signal-item{display:grid;grid-template-columns:45px 1fr 48px;gap:13px;align-items:center;background:rgba(255,255,255,.80);border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:16px 15px 16px 16px;box-shadow:0 9px 21px rgba(102,48,15,.06),inset 0 1px 0 rgba(255,255,255,.92)}.num-badge{width:38px;height:38px;border-radius:999px;background:var(--theme);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;box-shadow:0 10px 18px color-mix(in srgb,var(--theme) 28%,transparent)}.signal-text{font-size:18px;font-weight:760;line-height:1.48;letter-spacing:-.01em;color:var(--text)}.signal-text strong{color:var(--theme);font-weight:900;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:color-mix(in srgb,var(--theme) 35%,transparent)}.signal-ico{width:48px;height:48px;border-radius:18px;background:color-mix(in srgb,var(--theme) 13%,#fff);display:flex;align-items:center;justify-content:center}.signal-ico svg{width:28px;height:28px;fill:none;stroke:var(--theme);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.signal-ico svg .fill,.signal-ico .fill{fill:var(--theme);stroke:none}
+.warn-box{margin-top:18px;border-radius:22px;background:color-mix(in srgb,var(--theme) 10%,#fff);border:1px solid color-mix(in srgb,var(--theme) 12%,#fff);padding:14px 16px;display:flex;align-items:center;gap:12px;color:var(--deep);font-size:17px;font-weight:800;line-height:1.38}.warn-icon{width:34px;height:34px;border-radius:14px;background:color-mix(in srgb,var(--theme) 16%,#fff);display:flex;align-items:center;justify-content:center;flex-shrink:0}.warn-icon svg{width:22px;height:22px;fill:none;stroke:var(--theme);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.actions{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:15px}.action-btn{height:62px;border-radius:24px;border:none;font-family:inherit;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer}.action-btn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.btn-secondary{background:rgba(255,255,255,.88);color:var(--theme);box-shadow:0 12px 26px rgba(255,255,255,.15),inset 0 1px 0 rgba(255,255,255,.92)}.btn-primary{background:var(--theme);color:#fff;box-shadow:0 16px 30px color-mix(in srgb,var(--theme) 32%,transparent),inset 0 1px 0 rgba(255,255,255,.25)}
+.next-section{margin-top:24px;background:rgba(255,255,255,.38);border-radius:30px;padding:18px 16px 17px;border:1px solid rgba(255,255,255,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.45);backdrop-filter:blur(8px)}.next-label{font-size:18px;font-weight:900;color:color-mix(in srgb,var(--deep) 74%,#fff);margin:0 0 13px 5px}.next-list{display:flex;flex-direction:column;gap:13px}.next-row{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.78);border-radius:24px;padding:15px 16px;display:flex;align-items:center;gap:15px;box-shadow:0 12px 30px rgba(70,32,12,.06);cursor:pointer}.next-ico{width:52px;height:52px;border-radius:18px;background:color-mix(in srgb,var(--theme) 15%,#fff);display:flex;align-items:center;justify-content:center;flex-shrink:0}.next-ico svg{width:27px;height:27px;fill:none;stroke:var(--theme);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.next-text{flex:1}.next-title{font-size:18px;font-weight:900;line-height:1.2;color:var(--text)}.next-sub{font-size:13px;font-weight:700;color:rgba(60,25,10,.44);margin-top:7px;line-height:1.2}.next-arrow{font-size:28px;color:rgba(60,25,10,.22);line-height:1}.footer-note{margin:14px 6px 0;color:rgba(80,38,17,.48);font-size:11px;line-height:1.55;text-align:center}
+
+.page[data-theme="flame"]{--theme:#f35a11;--theme2:#ff8b44;--theme3:#ffb06f;--deep:#6b2608;--text:#351105;--phone-bg:linear-gradient(165deg,#ffb078 0%,#ff823e 42%,#f4570f 100%)}
+.page[data-theme="drip"]{--theme:#2e78c8;--theme2:#5a9de0;--theme3:#7fb8ec;--deep:#173a67;--text:#102744;--phone-bg:linear-gradient(165deg,#91c8f4 0%,#5a9de0 45%,#2e78c8 100%)}
+.page[data-theme="growth"]{--theme:#1f9d80;--theme2:#45cba5;--theme3:#6fdcbc;--deep:#0b5f4c;--text:#07362b;--phone-bg:linear-gradient(165deg,#7fe4c8 0%,#45cba5 46%,#1f9d80 100%)}
+.page[data-theme="shield"]{--theme:#5468a0;--theme2:#7c90c0;--theme3:#9fb0d4;--deep:#2d3c66;--text:#202947;--phone-bg:linear-gradient(165deg,#aebce0 0%,#7c90c0 48%,#5468a0 100%)}
+.page[data-theme="bolt"]{--theme:#e89500;--theme2:#ffc23d;--theme3:#ffd866;--deep:#745000;--text:#3a2800;--phone-bg:linear-gradient(165deg,#ffe18a 0%,#ffc23d 45%,#f0a300 100%)}
+.page[data-theme="scale"]{--theme:#8e54c4;--theme2:#b47edd;--theme3:#cb9fec;--deep:#4e2778;--text:#2d1648;--phone-bg:linear-gradient(165deg,#d3aaf0 0%,#b47edd 46%,#8e54c4 100%)}
+
+@media (max-width:480px){body{padding:0;background:#e8e0d5}.nav{position:sticky;top:0;z-index:99;padding:10px 8px;margin:0;background:rgba(232,224,213,.78);backdrop-filter:blur(10px)}.phone{width:100vw;min-height:100vh;border-radius:0;box-shadow:none;padding:28px 22px 24px}.result-title{font-size:38px}.subtitle{font-size:18px}.result-card{padding:27px 18px 20px;border-radius:30px}.stat-num{font-size:68px}.stat-label{font-size:18px}.signal-item{grid-template-columns:42px 1fr 44px;padding:15px 13px}.signal-text{font-size:16px}.actions{gap:12px}.action-btn{height:58px;font-size:20px}.next-row{padding:14px 14px}.next-title{font-size:16.5px}}
+</style>
+</head>
+<body>
+<nav class="nav"><button class="active" onclick="show(0,this)">成本敏感</button><button class="" onclick="show(1,this)">隐性浪费</button><button class="" onclick="show(2,this)">增长扩张</button><button class="" onclick="show(3,this)">稳健经营</button><button class="" onclick="show(4,this)">能源觉醒</button><button class="" onclick="show(5,this)">供应商困惑</button></nav>
+
+<svg style="display:none">
+  <symbol id="i-flame" viewBox="0 0 32 32"><path d="M16 4c0 5-6 8.7-6 15a6 6 0 0 0 12 0c0-3-1.5-5.2-3.2-6.8.2 2.2-.7 3.6-2.2 4.6C16.2 12.6 14.5 9.2 16 4Z"/></symbol>
+  <symbol id="i-drip" viewBox="0 0 32 32"><path d="M16 4c4.8 6.3 8 10.6 8 15a8 8 0 0 1-16 0c0-4.4 3.2-8.7 8-15Z"/></symbol>
+  <symbol id="i-growth" viewBox="0 0 32 32"><path d="M5 23l7-7 5 4 10-12"/><path d="M20 8h7v7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 32 32"><path d="M16 4 26 8v8.2c0 6.2-4.1 9.6-10 11.8-5.9-2.2-10-5.6-10-11.8V8l10-4Z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 32 32"><path class="fill" d="M17.5 3 6 18h7.8l-1.2 11L26 12.5h-8.2L17.5 3Z"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 32 32"><path d="M16 6v20M9 11h14M9 11l-4 7a4 4 0 0 0 8 0l-4-7ZM23 11l-4 7a4 4 0 0 0 8 0l-4-7ZM11 26h10"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 32 32"><path d="M6 24V10M14 24V7M22 24V14M4 24h24"/></symbol>
+  <symbol id="i-calculator" viewBox="0 0 32 32"><rect x="7" y="5" width="18" height="22" rx="3"/><path d="M10 9h12M11 15h2M16 15h2M21 15h2M11 20h2M16 20h2M21 20h2"/></symbol>
+  <symbol id="i-people" viewBox="0 0 32 32"><circle cx="11" cy="11" r="4"/><path d="M4 25c.8-5 4-8 7-8s6.2 3 7 8"/><circle cx="22" cy="12" r="3"/><path d="M19 25c.6-3.6 2.7-6 5-6 2 0 3.6 1.7 4 6"/></symbol>
+  <symbol id="i-magnify" viewBox="0 0 32 32"><circle cx="14" cy="14" r="8"/><path d="M20 20l7 7M10 15h8"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 32 32"><path d="M16 7 4.5 26h23L16 7Z"/><path d="M16 14v6M16 23.5h.01"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v10M12 14l-4-4M12 14l4-4M5 18v1.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V18"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.2 10.9l7.6-3.8M8.2 13.1l7.6 3.8"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 32 32"><path d="M10 5h9l5 5v17H10z"/><path d="M19 5v6h5M13 15h8M13 20h8M13 24h5"/></symbol>
+  <symbol id="i-advisor" viewBox="0 0 32 32"><circle cx="16" cy="11" r="5"/><path d="M7 27c1.1-6 4.7-9 9-9s7.9 3 9 9"/></symbol>
+</svg>
+
+<main class="stage">
+<section class="page active" data-theme="flame">
+  <div class="phone">
+    <div class="bg-art"><svg viewBox="0 0 100 100"><path d="M10 76C28 60 42 63 55 46s24-24 35-31"/><path d="M72 15h18v18"/><path d="M18 82V60M38 82V48M58 82V56M78 82V34"/></svg></div>
+    <header class="header">
+      <div class="icon-box"><svg viewBox="0 0 32 32"><use href="#i-flame"/></svg></div>
+      <div class="title-wrap"><span class="title-mark"></span><h1 class="result-title">成本敏感型</h1><span class="title-mark r"></span></div>
+      <div class="subtitle">每分钱都要花得明白</div>
+    </header>
+    <section class="result-card">
+      <div class="stat-num">8–18%</div>
+      <div class="stat-label">同类企业电费平均可优化空间</div>
+      <div class="signal-list"><div class="signal-item"><div class="num-badge">1</div><div class="signal-text">固定支出压力大，但电费<strong>从没系统测算过</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-calculator"/></svg></div></div><div class="signal-item"><div class="num-badge">2</div><div class="signal-text">没有同行对比，不知道<strong>贵在哪、能不能省</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-people"/></svg></div></div><div class="signal-item"><div class="num-badge">3</div><div class="signal-text">利润被压薄，但具体被谁压薄<strong>说不清</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-magnify"/></svg></div></div></div>
+      <div class="warn-box"><span class="warn-icon"><svg viewBox="0 0 32 32"><use href="#i-warning"/></svg></span>不主动查，这笔钱会一直悄悄流走</div>
+    </section>
+    <div class="actions">
+      <button class="action-btn btn-secondary"><svg viewBox="0 0 24 24"><use href="#i-save"/></svg>保存</button>
+      <button class="action-btn btn-primary"><svg viewBox="0 0 24 24"><use href="#i-share"/></svg>分享</button>
+    </div>
+    <section class="next-section">
+      <div class="next-label">接下来，你想做什么？</div>
+      <div class="next-list">
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-doc"/></svg></div><div class="next-text"><div class="next-title">领取专属电费优化报告</div><div class="next-sub">查看我的降本建议 · 免费</div></div><div class="next-arrow">›</div></div>
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-advisor"/></svg></div><div class="next-text"><div class="next-title">让顾问帮我看一看</div><div class="next-sub">10分钟初步判断 · 免费</div></div><div class="next-arrow">›</div></div>
+      </div>
+    </section>
+    <div class="footer-note">数据为同类企业经验参考，实际优化空间需结合账单进一步判断。</div>
+  </div>
+</section>
+<section class="page" data-theme="drip">
+  <div class="phone">
+    <div class="bg-art"><svg viewBox="0 0 100 100"><path d="M10 76C28 60 42 63 55 46s24-24 35-31"/><path d="M72 15h18v18"/><path d="M18 82V60M38 82V48M58 82V56M78 82V34"/></svg></div>
+    <header class="header">
+      <div class="icon-box"><svg viewBox="0 0 32 32"><use href="#i-drip"/></svg></div>
+      <div class="title-wrap"><span class="title-mark"></span><h1 class="result-title">隐性浪费型</h1><span class="title-mark r"></span></div>
+      <div class="subtitle">钱在漏，但你不知道从哪漏</div>
+    </header>
+    <section class="result-card">
+      <div class="stat-num">3个</div>
+      <div class="stat-label">同类企业平均发现的隐性漏钱点</div>
+      <div class="signal-list"><div class="signal-item"><div class="num-badge">1</div><div class="signal-text">每月钱去了哪里，<strong>说不清</strong>就是一个信号</div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-magnify"/></svg></div></div><div class="signal-item"><div class="num-badge">2</div><div class="signal-text">供应商很少比较，可能有人在<strong>安静多收钱</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-people"/></svg></div></div><div class="signal-item"><div class="num-badge">3</div><div class="signal-text">电费账单是入口，但你可能<strong>从没认真看过</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-calculator"/></svg></div></div></div>
+      <div class="warn-box"><span class="warn-icon"><svg viewBox="0 0 32 32"><use href="#i-warning"/></svg></span>先找到最可能漏钱的位置，再决定要不要深入查</div>
+    </section>
+    <div class="actions">
+      <button class="action-btn btn-secondary"><svg viewBox="0 0 24 24"><use href="#i-save"/></svg>保存</button>
+      <button class="action-btn btn-primary"><svg viewBox="0 0 24 24"><use href="#i-share"/></svg>分享</button>
+    </div>
+    <section class="next-section">
+      <div class="next-label">接下来，你想做什么？</div>
+      <div class="next-list">
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-doc"/></svg></div><div class="next-text"><div class="next-title">领取漏钱点排查报告</div><div class="next-sub">查看我的诊断结果 · 免费</div></div><div class="next-arrow">›</div></div>
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-advisor"/></svg></div><div class="next-text"><div class="next-title">让顾问帮我梳理漏点</div><div class="next-sub">15分钟找出优先排查项 · 免费</div></div><div class="next-arrow">›</div></div>
+      </div>
+    </section>
+    <div class="footer-note">数据为同类企业经验参考，实际问题需结合账单、报价和合同进一步判断。</div>
+  </div>
+</section>
+<section class="page" data-theme="growth">
+  <div class="phone">
+    <div class="bg-art"><svg viewBox="0 0 100 100"><path d="M10 76C28 60 42 63 55 46s24-24 35-31"/><path d="M72 15h18v18"/><path d="M18 82V60M38 82V48M58 82V56M78 82V34"/></svg></div>
+    <header class="header">
+      <div class="icon-box"><svg viewBox="0 0 32 32"><use href="#i-growth"/></svg></div>
+      <div class="title-wrap"><span class="title-mark"></span><h1 class="result-title">增长扩张型</h1><span class="title-mark r"></span></div>
+      <div class="subtitle">业务在涨，成本结构没跟上</div>
+    </header>
+    <section class="result-card">
+      <div class="stat-num">2–3倍</div>
+      <div class="stat-label">扩张期企业成本超支风险</div>
+      <div class="signal-list"><div class="signal-item"><div class="num-badge">1</div><div class="signal-text">采购和用能支出同步放大，但可能<strong>没人系统管</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-chart"/></svg></div></div><div class="signal-item"><div class="num-badge">2</div><div class="signal-text">新场地/新设备合同，往往决定<strong>未来电费高低</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-bolt"/></svg></div></div><div class="signal-item"><div class="num-badge">3</div><div class="signal-text">现在多花的冤枉钱，会随着规模<strong>持续叠加</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-growth"/></svg></div></div></div>
+      <div class="warn-box"><span class="warn-icon"><svg viewBox="0 0 32 32"><use href="#i-warning"/></svg></span>扩张时做一次把关，比日后返工省得多</div>
+    </section>
+    <div class="actions">
+      <button class="action-btn btn-secondary"><svg viewBox="0 0 24 24"><use href="#i-save"/></svg>保存</button>
+      <button class="action-btn btn-primary"><svg viewBox="0 0 24 24"><use href="#i-share"/></svg>分享</button>
+    </div>
+    <section class="next-section">
+      <div class="next-label">接下来，你想做什么？</div>
+      <div class="next-list">
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-doc"/></svg></div><div class="next-text"><div class="next-title">领取扩张期成本体检报告</div><div class="next-sub">查看扩张期降本建议 · 免费</div></div><div class="next-arrow">›</div></div>
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-advisor"/></svg></div><div class="next-text"><div class="next-title">让顾问帮我做把关</div><div class="next-sub">用能与供应商初筛 · 免费</div></div><div class="next-arrow">›</div></div>
+      </div>
+    </section>
+    <div class="footer-note">数据为行业经验参考，实际风险需结合企业扩张节奏、用能规模和合同安排判断。</div>
+  </div>
+</section>
+<section class="page" data-theme="shield">
+  <div class="phone">
+    <div class="bg-art"><svg viewBox="0 0 100 100"><path d="M10 76C28 60 42 63 55 46s24-24 35-31"/><path d="M72 15h18v18"/><path d="M18 82V60M38 82V48M58 82V56M78 82V34"/></svg></div>
+    <header class="header">
+      <div class="icon-box"><svg viewBox="0 0 32 32"><use href="#i-shield"/></svg></div>
+      <div class="title-wrap"><span class="title-mark"></span><h1 class="result-title">稳健经营型</h1><span class="title-mark r"></span></div>
+      <div class="subtitle">现在不是最坏，但可能不是最好</div>
+    </header>
+    <section class="result-card">
+      <div class="stat-num">60%+</div>
+      <div class="stat-label">稳定期企业存在“习惯性多付”</div>
+      <div class="signal-list"><div class="signal-item"><div class="num-badge">1</div><div class="signal-text">供应商多年没换过，但可能<strong>从没主动比较过</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-people"/></svg></div></div><div class="signal-item"><div class="num-badge">2</div><div class="signal-text">电费合同签完就放着，<strong>很少回头复核</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-calculator"/></svg></div></div><div class="signal-item"><div class="num-badge">3</div><div class="signal-text">成本结构清晰，但清晰<strong>不等于最优</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-shield"/></svg></div></div></div>
+      <div class="warn-box"><span class="warn-icon"><svg viewBox="0 0 32 32"><use href="#i-warning"/></svg></span>低干扰体检，能帮你确认是否还有优化空间</div>
+    </section>
+    <div class="actions">
+      <button class="action-btn btn-secondary"><svg viewBox="0 0 24 24"><use href="#i-save"/></svg>保存</button>
+      <button class="action-btn btn-primary"><svg viewBox="0 0 24 24"><use href="#i-share"/></svg>分享</button>
+    </div>
+    <section class="next-section">
+      <div class="next-label">接下来，你想做什么？</div>
+      <div class="next-list">
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-doc"/></svg></div><div class="next-text"><div class="next-title">领取经营体检报告</div><div class="next-sub">看看是否还有优化空间 · 免费</div></div><div class="next-arrow">›</div></div>
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-advisor"/></svg></div><div class="next-text"><div class="next-title">让顾问做低干扰初筛</div><div class="next-sub">不影响经营，先看大方向 · 免费</div></div><div class="next-arrow">›</div></div>
+      </div>
+    </section>
+    <div class="footer-note">数据为同类企业经验参考，实际优化空间需结合账单和现有服务合同判断。</div>
+  </div>
+</section>
+<section class="page" data-theme="bolt">
+  <div class="phone">
+    <div class="bg-art"><svg viewBox="0 0 100 100"><path d="M10 76C28 60 42 63 55 46s24-24 35-31"/><path d="M72 15h18v18"/><path d="M18 82V60M38 82V48M58 82V56M78 82V34"/></svg></div>
+    <header class="header">
+      <div class="icon-box"><svg viewBox="0 0 32 32"><use href="#i-bolt"/></svg></div>
+      <div class="title-wrap"><span class="title-mark"></span><h1 class="result-title">能源觉醒型</h1><span class="title-mark r"></span></div>
+      <div class="subtitle">电费这件事，你可能一直在多交</div>
+    </header>
+    <section class="result-card">
+      <div class="stat-num">10–25%</div>
+      <div class="stat-label">工商业用户电费可优化常见区间</div>
+      <div class="signal-list"><div class="signal-item"><div class="num-badge">1</div><div class="signal-text">电费支出不低，但从来没人<strong>系统分析过</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-bolt"/></svg></div></div><div class="signal-item"><div class="num-badge">2</div><div class="signal-text">售电、光伏、储能都听过，但不知道<strong>哪个适合</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-chart"/></svg></div></div><div class="signal-item"><div class="num-badge">3</div><div class="signal-text">电费账单细节多，自己看<strong>很难看出空间</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-magnify"/></svg></div></div></div>
+      <div class="warn-box"><span class="warn-icon"><svg viewBox="0 0 32 32"><use href="#i-warning"/></svg></span>不确认是否合理，每个月都在重复多付</div>
+    </section>
+    <div class="actions">
+      <button class="action-btn btn-secondary"><svg viewBox="0 0 24 24"><use href="#i-save"/></svg>保存</button>
+      <button class="action-btn btn-primary"><svg viewBox="0 0 24 24"><use href="#i-share"/></svg>分享</button>
+    </div>
+    <section class="next-section">
+      <div class="next-label">接下来，你想做什么？</div>
+      <div class="next-list">
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-doc"/></svg></div><div class="next-text"><div class="next-title">领取专属电费优化报告</div><div class="next-sub">判断有没有节省空间 · 免费</div></div><div class="next-arrow">›</div></div>
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-advisor"/></svg></div><div class="next-text"><div class="next-title">让顾问帮我看账单</div><div class="next-sub">账单初筛与方案判断 · 免费</div></div><div class="next-arrow">›</div></div>
+      </div>
+    </section>
+    <div class="footer-note">数据为行业经验参考，实际优化空间需结合用电量、峰谷结构、合同方式等判断。</div>
+  </div>
+</section>
+<section class="page" data-theme="scale">
+  <div class="phone">
+    <div class="bg-art"><svg viewBox="0 0 100 100"><path d="M10 76C28 60 42 63 55 46s24-24 35-31"/><path d="M72 15h18v18"/><path d="M18 82V60M38 82V48M58 82V56M78 82V34"/></svg></div>
+    <header class="header">
+      <div class="icon-box"><svg viewBox="0 0 32 32"><use href="#i-scale"/></svg></div>
+      <div class="title-wrap"><span class="title-mark"></span><h1 class="result-title">供应商困惑型</h1><span class="title-mark r"></span></div>
+      <div class="subtitle">报价拿到手，却看不出值不值</div>
+    </header>
+    <section class="result-card">
+      <div class="stat-num">70%+</div>
+      <div class="stat-label">中小企业从未主动复核供应商报价</div>
+      <div class="signal-list"><div class="signal-item"><div class="num-badge">1</div><div class="signal-text">主要靠熟人介绍，信息差可能让你<strong>持续多付</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-people"/></svg></div></div><div class="signal-item"><div class="num-badge">2</div><div class="signal-text">收到报价单，却看不懂<strong>好不好、贵不贵</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-calculator"/></svg></div></div><div class="signal-item"><div class="num-badge">3</div><div class="signal-text">合同服务边界模糊，往往是<strong>扯皮和超支根源</strong></div><div class="signal-ico"><svg viewBox="0 0 32 32"><use href="#i-scale"/></svg></div></div></div>
+      <div class="warn-box"><span class="warn-icon"><svg viewBox="0 0 32 32"><use href="#i-warning"/></svg></span>不复核，信息差会一直存在</div>
+    </section>
+    <div class="actions">
+      <button class="action-btn btn-secondary"><svg viewBox="0 0 24 24"><use href="#i-save"/></svg>保存</button>
+      <button class="action-btn btn-primary"><svg viewBox="0 0 24 24"><use href="#i-share"/></svg>分享</button>
+    </div>
+    <section class="next-section">
+      <div class="next-label">接下来，你想做什么？</div>
+      <div class="next-list">
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-doc"/></svg></div><div class="next-text"><div class="next-title">领取供应商报价复核清单</div><div class="next-sub">判断报价是否值得签 · 免费</div></div><div class="next-arrow">›</div></div>
+        <div class="next-row"><div class="next-ico"><svg viewBox="0 0 32 32"><use href="#i-advisor"/></svg></div><div class="next-text"><div class="next-title">让顾问帮我看报价</div><div class="next-sub">报价/合同/方案初步判断 · 免费</div></div><div class="next-arrow">›</div></div>
+      </div>
+    </section>
+    <div class="footer-note">数据为行业调研参考，实际情况需结合报价单、合同和交付范围判断。</div>
+  </div>
+</section></main>
+<script>
+function show(index,btn){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===index));
+}
+</script>
+</body>
+</html>
