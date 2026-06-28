@@ -1,5 +1,6 @@
 .result-page {
   position: relative;
+  height: 100vh;
   min-height: 100vh;
   padding: 42rpx 42rpx 48rpx;
   box-sizing: border-box;
@@ -68,6 +69,13 @@
 
 .result-status {
   height: 50rpx;
+}
+
+.result-fit {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  transform-origin: top center;
 }
 
 .result-bg-art {

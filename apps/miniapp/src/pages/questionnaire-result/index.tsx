@@ -10,6 +10,32 @@ import { getLatestSubmission, saveLatestSubmission } from '@/store/questionnaire
 import { getResultContent, type ResultAction, type ResultSignal } from './result-content'
 import './index.css'
 
+const RESULT_PAGE_VERTICAL_PADDING_RPX = 72
+const RESULT_CONTENT_HEIGHT_RPX = 1860
+const RESULT_MIN_SCALE = 0.62
+const RESULT_DEFAULT_SCALE = 0.84
+
+// 仅按窗口高度缩放结果页整体视觉比例，内部内容和交互结构保持不变。
+const getResultFitScale = () => {
+  try {
+    const { windowHeight, windowWidth } = Taro.getSystemInfoSync()
+    if (!windowHeight || !windowWidth) {
+      return RESULT_DEFAULT_SCALE
+    }
+
+    const availableHeightRpx = (windowHeight * 750) / windowWidth
+    const scale = (availableHeightRpx - RESULT_PAGE_VERTICAL_PADDING_RPX) / RESULT_CONTENT_HEIGHT_RPX
+
+    if (!Number.isFinite(scale)) {
+      return RESULT_DEFAULT_SCALE
+    }
+
+    return Math.min(1, Math.max(RESULT_MIN_SCALE, Number(scale.toFixed(3))))
+  } catch {
+    return RESULT_DEFAULT_SCALE
+  }
+}
+
 const getQueryId = () => {
   const params = Taro.getCurrentInstance().router?.params || {}
   const value = params.submissionId
@@ -34,6 +60,11 @@ function SignalCopy({ signal }: { signal: ResultSignal }) {
 export default function QuestionnaireResultPage() {
   const [submission, setSubmission] = useState<QuestionnaireSubmissionResponse | undefined>(() => getLatestSubmission())
   const [loading, setLoading] = useState(false)
+  const [resultScale, setResultScale] = useState(() => getResultFitScale())
+
+  useEffect(() => {
+    setResultScale(getResultFitScale())
+  }, [])
 
   useEffect(() => {
     const submissionId = getQueryId()
@@ -72,91 +103,101 @@ export default function QuestionnaireResultPage() {
   }
 
   const content = getResultContent(submission.profile_code)
+  const fitWidthPercent = 100 / resultScale
 
   return (
     <View className={`result-page result-theme-${content.theme}`}>
-      <View className="result-bg-art">
-        <View className="result-bg-line result-bg-line-a" />
-        <View className="result-bg-line result-bg-line-b" />
-        <View className="result-bg-bar result-bg-bar-a" />
-        <View className="result-bg-bar result-bg-bar-b" />
-        <View className="result-bg-bar result-bg-bar-c" />
-      </View>
-
-      <View className="result-status" />
-
-      <View className="result-header">
-        <View className="result-icon-box">
-          <Text className="result-icon-text">{content.icon}</Text>
-        </View>
-        <View className="result-title-row">
-          <View className="result-title-mark" />
-          <Text className="result-title">{content.title}</Text>
-          <View className="result-title-mark result-title-mark-right" />
-        </View>
-        <View className="result-subtitle-row">
-          <View className="result-subtitle-line" />
-          <Text className="result-subtitle">{content.subtitle}</Text>
-          <View className="result-subtitle-line result-subtitle-line-right" />
-        </View>
-      </View>
-
-      <View className="result-main-card">
-        <Text className="result-stat-num">{content.stat}</Text>
-        <Text className="result-stat-label">{content.statLabel}</Text>
-
-        <View className="result-signal-list">
-          {content.signals.map((signal, index) => (
-            <View className="result-signal-item" key={signal.highlight}>
-              <View className="result-num-badge">
-                <Text className="result-num-text">{index + 1}</Text>
-              </View>
-              <SignalCopy signal={signal} />
-              <View className="result-mini-icon">
-                <Text className="result-mini-icon-text">{signal.icon}</Text>
-              </View>
-            </View>
-          ))}
+      <View
+        className="result-fit"
+        style={{
+          width: `${fitWidthPercent}%`,
+          marginLeft: `${(100 - fitWidthPercent) / 2}%`,
+          transform: `scale(${resultScale})`,
+        }}
+      >
+        <View className="result-bg-art">
+          <View className="result-bg-line result-bg-line-a" />
+          <View className="result-bg-line result-bg-line-b" />
+          <View className="result-bg-bar result-bg-bar-a" />
+          <View className="result-bg-bar result-bg-bar-b" />
+          <View className="result-bg-bar result-bg-bar-c" />
         </View>
 
-        <View className="result-warn-box">
-          <View className="result-warn-icon">
-            <Text className="result-warn-icon-text">!</Text>
+        <View className="result-status" />
+
+        <View className="result-header">
+          <View className="result-icon-box">
+            <Text className="result-icon-text">{content.icon}</Text>
           </View>
-          <Text className="result-warn-text">{content.warning}</Text>
+          <View className="result-title-row">
+            <View className="result-title-mark" />
+            <Text className="result-title">{content.title}</Text>
+            <View className="result-title-mark result-title-mark-right" />
+          </View>
+          <View className="result-subtitle-row">
+            <View className="result-subtitle-line" />
+            <Text className="result-subtitle">{content.subtitle}</Text>
+            <View className="result-subtitle-line result-subtitle-line-right" />
+          </View>
         </View>
-      </View>
 
-      <View className="result-actions">
-        <View className="result-action result-action-secondary" hoverClass="result-tap" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
-          <Text className="result-action-icon">↓</Text>
-          <Text className="result-action-text">保存</Text>
-        </View>
-        <View className="result-action result-action-primary" hoverClass="result-tap" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
-          <Text className="result-action-icon">↗</Text>
-          <Text className="result-action-text">分享</Text>
-        </View>
-      </View>
+        <View className="result-main-card">
+          <Text className="result-stat-num">{content.stat}</Text>
+          <Text className="result-stat-label">{content.statLabel}</Text>
 
-      <View className="result-next-section">
-        <Text className="result-next-label">接下来，你想做什么？</Text>
-        <View className="result-next-list">
-          {content.nextActions.map((action) => (
-            <View className="result-next-row" hoverClass="result-tap" key={action.title} onClick={() => Taro.navigateTo({ url: buildActionUrl(action, submission) })}>
-              <View className="result-next-icon">
-                <Text className="result-next-icon-text">{action.icon}</Text>
+          <View className="result-signal-list">
+            {content.signals.map((signal, index) => (
+              <View className="result-signal-item" key={signal.highlight}>
+                <View className="result-num-badge">
+                  <Text className="result-num-text">{index + 1}</Text>
+                </View>
+                <SignalCopy signal={signal} />
+                <View className="result-mini-icon">
+                  <Text className="result-mini-icon-text">{signal.icon}</Text>
+                </View>
               </View>
-              <View className="result-next-copy">
-                <Text className="result-next-title">{action.title}</Text>
-                <Text className="result-next-subtitle">{action.subtitle}</Text>
-              </View>
-              <Text className="result-next-arrow">›</Text>
+            ))}
+          </View>
+
+          <View className="result-warn-box">
+            <View className="result-warn-icon">
+              <Text className="result-warn-icon-text">!</Text>
             </View>
-          ))}
+            <Text className="result-warn-text">{content.warning}</Text>
+          </View>
         </View>
-      </View>
 
-      <Text className="result-footer-note">{content.footerNote}</Text>
+        <View className="result-actions">
+          <View className="result-action result-action-secondary" hoverClass="result-tap" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
+            <Text className="result-action-icon">↓</Text>
+            <Text className="result-action-text">保存</Text>
+          </View>
+          <View className="result-action result-action-primary" hoverClass="result-tap" onClick={() => Taro.navigateTo({ url: '/pages/share-card/index' })}>
+            <Text className="result-action-icon">↗</Text>
+            <Text className="result-action-text">分享</Text>
+          </View>
+        </View>
+
+        <View className="result-next-section">
+          <Text className="result-next-label">接下来，你想做什么？</Text>
+          <View className="result-next-list">
+            {content.nextActions.map((action) => (
+              <View className="result-next-row" hoverClass="result-tap" key={action.title} onClick={() => Taro.navigateTo({ url: buildActionUrl(action, submission) })}>
+                <View className="result-next-icon">
+                  <Text className="result-next-icon-text">{action.icon}</Text>
+                </View>
+                <View className="result-next-copy">
+                  <Text className="result-next-title">{action.title}</Text>
+                  <Text className="result-next-subtitle">{action.subtitle}</Text>
+                </View>
+                <Text className="result-next-arrow">›</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <Text className="result-footer-note">{content.footerNote}</Text>
+      </View>
     </View>
   )
 }
