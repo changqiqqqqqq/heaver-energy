@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 
 import { clearSession, getAccessToken } from '@/store/user.store'
 
-export const API_BASE_URL = 'http://127.0.0.1:8000'
+export const API_BASE_URL = 'http://101.34.67.122'
 export const APP_API_PREFIX = '/api/app'
 
 export type ApiResponse<T> = {
@@ -26,6 +26,15 @@ const normalizeUrl = (url: string) => {
     return url
   }
   return `${API_BASE_URL}${url}`
+}
+
+const getErrorMessage = (error: unknown) => {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  const errMsg = (error as { errMsg?: string })?.errMsg
+  return errMsg || '网络异常，请稍后重试'
 }
 
 export class RequestError extends Error {
@@ -74,7 +83,7 @@ export async function request<TData, TBody = unknown>(options: RequestOptions<TB
 
     return body.data as TData
   } catch (error) {
-    const message = error instanceof Error ? error.message : '网络异常，请稍后重试'
+    const message = getErrorMessage(error)
     if (options.showError !== false) {
       Taro.showToast({ title: message, icon: 'none' })
     }

@@ -24,14 +24,20 @@ export default defineAppConfig({
     list: [
       {
         pagePath: 'pages/home/index',
+        iconPath: 'assets/tabbar/tab-home.png',
+        selectedIconPath: 'assets/tabbar/tab-home-active.png',
         text: '首页',
       },
       {
         pagePath: 'pages/messages/index',
+        iconPath: 'assets/tabbar/tab-messages.png',
+        selectedIconPath: 'assets/tabbar/tab-messages-active.png',
         text: '消息',
       },
       {
         pagePath: 'pages/profile/index',
+        iconPath: 'assets/tabbar/tab-profile.png',
+        selectedIconPath: 'assets/tabbar/tab-profile-active.png',
         text: '我的',
       },
     ],

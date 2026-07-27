@@ -25,7 +25,7 @@ export default function ProfilePage() {
       setLoading(true)
       const loginUser = await authApi.ensureLogin()
       setUser(loginUser)
-      authApi.getMe().then(setUser).catch(() => undefined)
+      authApi.getMe().then(setUser).catch(() => {})
     } finally {
       setLoading(false)
     }
@@ -94,7 +94,9 @@ export default function ProfilePage() {
         <View className="profile-logout" onClick={logout}>
           <Text className="profile-logout-text">退出登录</Text>
         </View>
-      ) : null}
+      ) : (
+        <></>
+      )}
     </View>
   )
 }

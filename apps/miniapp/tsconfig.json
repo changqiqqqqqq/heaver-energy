@@ -14,6 +14,6 @@
     },
     "types": ["@tarojs/taro"]
   },
-  "include": ["src"]
+  "include": ["src", "config", "project.config.json"]
 }
 

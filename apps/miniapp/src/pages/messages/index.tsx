@@ -1,50 +1,68 @@
 import { Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { useEffect, useMemo, useState } from 'react'
+
+import AppButton from '@/components/AppButton'
+import { authApi } from '@/services/auth.api'
+import { getAccessToken, getCachedUser, type AppUser } from '@/store/user.store'
 
 import './index.css'
 
-const tabs = ['全部', '通知', '服务进度']
+type MessageType = 'notice' | 'progress'
 
-const messages = [
-  {
-    id: 'consultant',
-    icon: '⌁',
-    title: '李师傅 顾问',
-    time: '刚刚',
-    desc: '收到了你的经营体质画像，请补充企业信息，我帮你做初筛。',
-    unread: true,
-    url: '/pages/chat/index',
-  },
-  {
-    id: 'progress',
-    icon: '▤',
-    title: '免费优化报告',
-    time: '09:15',
-    desc: '你的专属报告已进入资料补充阶段，提交后会生成服务进度。',
-    unread: false,
-    url: '/pages/screening/index',
-  },
-  {
-    id: 'notice',
-    icon: '!',
-    title: '服务通知',
-    time: '昨天',
-    desc: '账单上传通道即将开放，当前可先提交基础信息完成初筛。',
-    unread: false,
-    url: '/pages/chat/index',
-  },
-  {
-    id: 'system',
-    icon: '□',
-    title: '系统消息',
-    time: '周一',
-    desc: '测评结果已生成，可在「我的」里查看最近一次画像。',
-    unread: false,
-    url: '/pages/profile/index',
-  },
+type MessageItem = {
+  id: string
+  type: MessageType
+  icon: string
+  title: string
+  time: string
+  desc: string
+  unread?: boolean
+  url: string
+}
+
+const tabs: Array<{ label: string; type: 'all' | MessageType }> = [
+  { label: '全部', type: 'all' },
+  { label: '通知', type: 'notice' },
+  { label: '服务进度', type: 'progress' },
 ]
 
+const messages: MessageItem[] = []
+
 export default function MessagesPage() {
+  const [user, setUser] = useState<AppUser | undefined>(() => getCachedUser())
+  const [loading, setLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState<'all' | MessageType>('all')
+
+  useEffect(() => {
+    if (!getAccessToken()) {
+      return
+    }
+    authApi.getMe().then(setUser).catch(() => {})
+  }, [])
+
+  const filteredMessages = useMemo(() => {
+    if (activeTab === 'all') {
+      return messages
+    }
+    return messages.filter((item) => item.type === activeTab)
+  }, [activeTab])
+
+  const login = async () => {
+    try {
+      setLoading(true)
+      const loginUser = await authApi.ensureLogin()
+      setUser(loginUser)
+      authApi.getMe().then(setUser).catch(() => {})
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const goQuestionnaire = () => {
+    Taro.navigateTo({ url: '/pages/questionnaire/index' })
+  }
+
   const openMessage = (url: string) => {
     if (url.includes('/profile/index')) {
       Taro.switchTab({ url })
@@ -53,20 +71,22 @@ export default function MessagesPage() {
     Taro.navigateTo({ url })
   }
 
-  return (
-    <View className="messages-page">
-      <Text className="messages-title">消息</Text>
-
+  const renderMessageList = () => (
+    <>
       <View className="message-tabs">
-        {tabs.map((tab, index) => (
-          <View className={index === 0 ? 'message-tab message-tab-active' : 'message-tab'} key={tab}>
-            <Text className="message-tab-text">{tab}</Text>
+        {tabs.map((tab) => (
+          <View
+            className={activeTab === tab.type ? 'message-tab message-tab-active' : 'message-tab'}
+            key={tab.type}
+            onClick={() => setActiveTab(tab.type)}
+          >
+            <Text className="message-tab-text">{tab.label}</Text>
           </View>
         ))}
       </View>
 
       <View className="message-list">
-        {messages.map((item) => (
+        {filteredMessages.map((item) => (
           <View className="message-item" key={item.id} hoverClass="message-item-hover" onClick={() => openMessage(item.url)}>
             <View className="message-icon">
               <Text className="message-icon-text">{item.icon}</Text>
@@ -83,6 +103,43 @@ export default function MessagesPage() {
           </View>
         ))}
       </View>
+    </>
+  )
+
+  const renderEmptyState = () => {
+    if (!user) {
+      return (
+        <View className="message-empty">
+          <View className="message-empty-icon">
+            <Text className="message-empty-icon-text">⌁</Text>
+          </View>
+          <Text className="message-empty-title">登录后查看消息</Text>
+          <Text className="message-empty-desc">登录后可同步你的测评结果、服务需求和顾问回复。</Text>
+          <View className="message-empty-action">
+            <AppButton text="微信登录" loading={loading} disabled={loading} onClick={login} />
+          </View>
+        </View>
+      )
+    }
+
+    return (
+      <View className="message-empty">
+        <View className="message-empty-icon">
+          <Text className="message-empty-icon-text">✓</Text>
+        </View>
+        <Text className="message-empty-title">暂无消息</Text>
+        <Text className="message-empty-desc">完成电费瘦身小测试后，报告、服务进度和顾问回复会在这里同步。</Text>
+        <View className="message-empty-action">
+          <AppButton text="去做测试" onClick={goQuestionnaire} />
+        </View>
+      </View>
+    )
+  }
+
+  return (
+    <View className="messages-page">
+      <Text className="messages-title">消息</Text>
+      {messages.length > 0 ? renderMessageList() : renderEmptyState()}
     </View>
   )
 }

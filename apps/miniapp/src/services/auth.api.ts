@@ -15,8 +15,12 @@ export type PhoneAuthorizeResponse = {
   phone_authorized: boolean
 }
 
+type LoginOptions = {
+  showError?: boolean
+}
+
 export const authApi = {
-  async loginWithWechat(): Promise<AuthTokenResponse> {
+  async loginWithWechat(options: LoginOptions = {}): Promise<AuthTokenResponse> {
     const loginResult = await Taro.login()
     if (!loginResult.code) {
       throw new Error('微信登录失败，请重试')
@@ -26,6 +30,7 @@ export const authApi = {
       url: `${APP_API_PREFIX}/auth/wechat-login`,
       method: 'POST',
       auth: false,
+      showError: options.showError,
       data: {
         code: loginResult.code,
       },
@@ -35,13 +40,13 @@ export const authApi = {
     return token
   },
 
-  async ensureLogin(): Promise<AppUser> {
+  async ensureLogin(options: LoginOptions = {}): Promise<AppUser> {
     const cachedUser = getCachedUser()
     if (getAccessToken() && cachedUser) {
       return cachedUser
     }
 
-    const token = await this.loginWithWechat()
+    const token = await this.loginWithWechat(options)
     return token.user
   },
 

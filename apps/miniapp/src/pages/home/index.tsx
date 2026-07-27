@@ -15,7 +15,7 @@ const navigateTo = (url: string) => {
 export default function HomePage() {
   useEffect(() => {
     // 首页只做静默登录，不阻塞用户开始测评，避免首屏体验被网络状态拖住。
-    authApi.ensureLogin().catch(() => undefined)
+    authApi.ensureLogin({ showError: false }).catch(() => {})
   }, [])
 
   return (
