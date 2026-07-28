@@ -2,7 +2,7 @@ import Taro from '@tarojs/taro'
 
 import { clearSession, getAccessToken } from '@/store/user.store'
 
-export const API_BASE_URL = 'http://101.34.67.122'
+export const API_BASE_URL = 'https://iceberg.xin'
 export const APP_API_PREFIX = '/api/app'
 
 export type ApiResponse<T> = {

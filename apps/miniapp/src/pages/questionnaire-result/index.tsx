@@ -11,26 +11,39 @@ import { getResultContent, type ResultAction, type ResultSignal } from './result
 import './index.css'
 
 const RESULT_PAGE_VERTICAL_PADDING_RPX = 72
-const RESULT_CONTENT_HEIGHT_RPX = 1860
-const RESULT_MIN_SCALE = 0.62
-const RESULT_DEFAULT_SCALE = 0.84
+const RESULT_CONTENT_HEIGHT_RPX = 2580
+const RESULT_MIN_SCALE = 0.46
+const RESULT_DEFAULT_SCALE = 0.62
 
-// 仅按窗口高度缩放结果页整体视觉比例，内部内容和交互结构保持不变。
+const clampResultScale = (scale: number) => {
+  if (!Number.isFinite(scale)) {
+    return RESULT_DEFAULT_SCALE
+  }
+
+  return Math.min(1, Math.max(RESULT_MIN_SCALE, Number(scale.toFixed(3))))
+}
+
+const getWindowMetrics = () => {
+  const { windowHeight, windowWidth } = Taro.getSystemInfoSync()
+  if (!windowHeight || !windowWidth) {
+    return undefined
+  }
+
+  return {
+    windowWidth,
+    availableHeightRpx: (windowHeight * 750) / windowWidth - RESULT_PAGE_VERTICAL_PADDING_RPX,
+  }
+}
+
+// 先按窗口高度给出兜底比例，真机渲染后会再用实际内容高度校准一次。
 const getResultFitScale = () => {
   try {
-    const { windowHeight, windowWidth } = Taro.getSystemInfoSync()
-    if (!windowHeight || !windowWidth) {
+    const metrics = getWindowMetrics()
+    if (!metrics) {
       return RESULT_DEFAULT_SCALE
     }
 
-    const availableHeightRpx = (windowHeight * 750) / windowWidth
-    const scale = (availableHeightRpx - RESULT_PAGE_VERTICAL_PADDING_RPX) / RESULT_CONTENT_HEIGHT_RPX
-
-    if (!Number.isFinite(scale)) {
-      return RESULT_DEFAULT_SCALE
-    }
-
-    return Math.min(1, Math.max(RESULT_MIN_SCALE, Number(scale.toFixed(3))))
+    return clampResultScale(metrics.availableHeightRpx / RESULT_CONTENT_HEIGHT_RPX)
   } catch {
     return RESULT_DEFAULT_SCALE
   }
@@ -64,7 +77,43 @@ export default function QuestionnaireResultPage() {
 
   useEffect(() => {
     setResultScale(getResultFitScale())
-  }, [])
+  }, [submission?.id])
+
+  useEffect(() => {
+    if (!submission) {
+      return
+    }
+
+    const timer = setTimeout(() => {
+      try {
+        const metrics = getWindowMetrics()
+        if (!metrics) {
+          return
+        }
+
+        Taro.createSelectorQuery()
+          .select('.result-fit')
+          .boundingClientRect((rectResult) => {
+            const rect = Array.isArray(rectResult) ? rectResult[0] : rectResult
+            if (!rect?.height) {
+              return
+            }
+
+            const renderedHeightRpx = (rect.height * 750) / metrics.windowWidth
+            const naturalHeightRpx = renderedHeightRpx / resultScale
+            const nextScale = clampResultScale(metrics.availableHeightRpx / naturalHeightRpx)
+            if (Math.abs(nextScale - resultScale) > 0.01) {
+              setResultScale(nextScale)
+            }
+          })
+          .exec()
+      } catch {
+        setResultScale(getResultFitScale())
+      }
+    }, 80)
+
+    return () => clearTimeout(timer)
+  }, [resultScale, submission?.id])
 
   useEffect(() => {
     const submissionId = getQueryId()
