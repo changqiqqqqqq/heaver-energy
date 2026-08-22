@@ -20,7 +20,9 @@ const router = createBrowserRouter([
       { path: 'settings', element: <SettingsPage /> }
     ]
   }
-])
+], {
+  basename: '/beaver-manager'
+})
 
 export function AppRouter() {
   return <RouterProvider router={router} />
