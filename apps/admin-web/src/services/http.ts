@@ -1,6 +1,6 @@
 import { clearAdminSession, getAdminToken } from '../store/auth.store'
 
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'https://api.helicloud.cn').replace(/\/$/, '')
 export const ADMIN_API_PREFIX = '/api/admin'
 
 export type ApiResponse<T> = {

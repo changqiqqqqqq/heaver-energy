@@ -19,7 +19,7 @@ RUN --mount=type=cache,id=heaver-admin-pnpm-store,target=/pnpm/store \
 
 COPY apps/admin-web apps/admin-web
 
-ARG VITE_API_BASE_URL=
+ARG VITE_API_BASE_URL=https://api.helicloud.cn
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 RUN pnpm --filter @heaver-energy/admin-web build
