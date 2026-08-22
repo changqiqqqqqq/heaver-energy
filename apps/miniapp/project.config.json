@@ -2,9 +2,9 @@
   "miniprogramRoot": "./dist",
   "projectname": "heaver-energy-miniapp",
   "description": "Heaver Energy MVP miniapp scaffold",
-  "appid": "wx5e873f58a908c999",
+  "appid": "wx4e2447ad931ebc5a",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": false,
     "enhance": false,
     "compileHotReLoad": false,
